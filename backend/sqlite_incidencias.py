@@ -279,37 +279,31 @@ class SQLiteIncidencias:
         return self.get_incidencias(fecha_inicio=fecha_inicio, fecha_fin=fecha_fin, departamento=departamento)
 
     def get_timeline_incidencia(self, incidencia_id: int) -> List[Dict]:
-        """Devuelve el historial de eventos de una incidencia combinando historial y comentarios"""
+        """Obtiene la línea temporal completa de una incidencia"""
         with self._lock:
             conn = self._get_connection()
             try:
                 cursor = conn.cursor()
-                # Eventos del historial
                 cursor.execute("""
-                    SELECT
-                        'evento' as tipo,
-                        tipo_evento,
-                        descripcion,
-                        usuario,
-                        username,
-                        datos_adicionales,
-                        fecha_evento as fecha
+                    SELECT 
+                        id, tipo_evento, descripcion, datos_adicionales,
+                        usuario, username, fecha_evento
                     FROM historial_incidencias
                     WHERE incidencia_id = ?
-                    UNION ALL
-                    SELECT
-                        'comentario' as tipo,
-                        'COMENTARIO' as tipo_evento,
-                        comentario as descripcion,
-                        usuario,
-                        username,
-                        NULL as datos_adicionales,
-                        fecha_comentario as fecha
-                    FROM comentarios_incidencias
-                    WHERE incidencia_id = ?
-                    ORDER BY fecha ASC
-                """, (incidencia_id, incidencia_id))
-                return cursor.fetchall()
+                    ORDER BY fecha_evento ASC
+                """, (incidencia_id,))
+                eventos = cursor.fetchall()
+                
+                import json
+                for evento in eventos:
+                    # Parsear JSON si existe
+                    if evento['datos_adicionales']:
+                        try:
+                            evento['datos_adicionales'] = json.loads(evento['datos_adicionales'])
+                        except:
+                            evento['datos_adicionales'] = {}
+                
+                return eventos
             except Exception as e:
                 logging.error(f"❌ Error obteniendo timeline: {e}")
                 return []
