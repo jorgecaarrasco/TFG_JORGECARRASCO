@@ -116,14 +116,36 @@ def seed_db():
             
             inc_id = cursor.lastrowid
             
+            import json
+            
+            # Evento 1: Creación (PENDIENTE)
+            cursor.execute("""
+                INSERT INTO historial_incidencias (incidencia_id, tipo_evento, descripcion, usuario, username, datos_adicionales, fecha_evento)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (inc_id, 'CREADA', 'Incidencia reportada', reportado_por, reportado_por.lower().replace(' ', '.'), json.dumps({'nuevo': 'pendiente'}), fecha_str))
+            
+            if estado in ['en_proceso', 'resuelta']:
+                # Evento 2: EN PROGRESO
+                fecha_progreso = fecha + timedelta(minutes=random.randint(5, 30))
+                cursor.execute("""
+                    INSERT INTO historial_incidencias (incidencia_id, tipo_evento, descripcion, usuario, username, datos_adicionales, fecha_evento)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (inc_id, 'EN_PROCESO', 'Estado cambiado a en_proceso', 'Técnico IT', 'tecnico', json.dumps({'anterior': 'pendiente', 'nuevo': 'en_proceso'}), fecha_progreso.strftime('%Y-%m-%d %H:%M:%S')))
+                
             if estado == 'resuelta':
+                # Evento 3: RESUELTA
                 fecha_res = fecha + timedelta(hours=random.randint(1, 5))
                 cursor.execute("""
                     UPDATE incidencias SET fecha_resolucion = ?, resuelto_por = ?, notas_resolucion = ? WHERE id = ?
                 """, (fecha_res.strftime('%Y-%m-%d %H:%M:%S'), 'Técnico IT', 'Problema resuelto correctamente.', inc_id))
+                
+                cursor.execute("""
+                    INSERT INTO historial_incidencias (incidencia_id, tipo_evento, descripcion, usuario, username, datos_adicionales, fecha_evento)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (inc_id, 'RESUELTA', 'Estado cambiado a resuelta - Problema resuelto correctamente.', 'Técnico IT', 'tecnico', json.dumps({'anterior': 'en_proceso', 'nuevo': 'resuelta'}), fecha_res.strftime('%Y-%m-%d %H:%M:%S')))
         
         conn.commit()
-        print("✅ Base de datos SQLite poblada exitosamente.")
+        print("✅ Base de datos SQLite poblada exitosamente con historial de eventos.")
         
     except Exception as e:
         print(f"❌ Error poblando base de datos: {e}")
