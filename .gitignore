@@ -1,0 +1,69 @@
+# =============================================================================
+# Dashboard de Control Logistico - GITIGNORE
+# =============================================================================
+
+# ARCHIVOS SENSIBLES - NUNCA SUBIR
+.env
+*.env
+backend/.env
+
+# PYTHON
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# LOGS
+*.log
+*.log.*
+
+# EJECUTABLES COMPILADOS
+*.exe
+
+# IDE / EDITOR
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# JAR / JAVA
+*.class
+*.jar
+!backend/ojdbc8.jar
+
+# TEMPORALES
+tmp/
+temp/
+*.tmp
+*.bak
+*.old
+launcher_log.txt
+server_out.log
+server_err.log
+rfid_schedule.json
+
+# BASE DE DATOS LOCAL
+*.db
+*.sqlite
+*.sqlite3
+
+# CACHE
+.cache/
+*.cache
+.pytest_cache/

@@ -1,0 +1,474 @@
+﻿/**
+ * =====================================================================
+ * ESTILOS DEL SISTEMA DE PAUSAS - Dashboard de Control Logistico
+ * Versión: 3.1
+ * =====================================================================
+ */
+
+/* =====================================================================
+   ESTADO PAUSADA EN CARDS
+   ===================================================================== */
+.incidencia-card.pausada { 
+    border-left-color: #9f7aea; 
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+}
+
+.incidencia-estado.pausada { 
+    background: linear-gradient(135deg, #e9d8fd, #d6bcfa); 
+    color: #553c9a;
+}
+
+/* Badge de pausa activa */
+.badge-pausada {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, #9f7aea, #805ad5);
+    color: white;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    animation: pulse-pausa 2s infinite;
+}
+
+@keyframes pulse-pausa {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* =====================================================================
+   BOTONES DE PAUSA/REANUDAR
+   ===================================================================== */
+.btn-pausar {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #9f7aea, #805ad5);
+    color: white;
+}
+
+.btn-pausar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(128, 90, 213, 0.4);
+}
+
+.btn-reanudar {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+}
+
+.btn-reanudar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 161, 105, 0.4);
+}
+
+/* =====================================================================
+   MODAL DE PAUSAR
+   ===================================================================== */
+#modalPausarIncidencia .modal-content,
+#modalGestionMotivosPausa .modal-content {
+    max-width: 500px;
+}
+
+.motivo-pausa-option {
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.motivo-pausa-option:hover {
+    border-color: #9f7aea;
+    background: #faf5ff;
+}
+
+.motivo-pausa-option.selected {
+    border-color: #805ad5;
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+}
+
+/* =====================================================================
+   TIMELINE
+   ===================================================================== */
+.timeline-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid #e2e8f0;
+}
+
+.timeline-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #e2e8f0, #cbd5e0);
+    border-radius: 2px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -30px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+.timeline-content {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.timeline-tipo {
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.timeline-fecha {
+    font-size: 11px;
+    color: #a0aec0;
+}
+
+.timeline-descripcion {
+    color: #4a5568;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.timeline-usuario {
+    font-size: 11px;
+    color: #718096;
+}
+
+.timeline-empty {
+    text-align: center;
+    color: #a0aec0;
+    padding: 30px;
+    font-style: italic;
+}
+
+/* Colores por tipo de evento */
+.timeline-item[data-tipo="PAUSADA"] .timeline-content {
+    background: linear-gradient(135deg, #faf5ff, white);
+    border-left: 3px solid #9f7aea;
+}
+
+.timeline-item[data-tipo="REANUDADA"] .timeline-content {
+    background: linear-gradient(135deg, #f0fff4, white);
+    border-left: 3px solid #48bb78;
+}
+
+.timeline-resumen-pausas {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #553c9a;
+    font-size: 13px;
+}
+
+.timeline-resumen-pausas .badge-pausas {
+    background: #805ad5;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* =====================================================================
+   NOTIFICACIONES
+   ===================================================================== */
+.notificacion {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    z-index: 10000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+}
+
+.notificacion.visible {
+    transform: translateX(0);
+}
+
+.notif-success {
+    background: linear-gradient(135deg, #68d391, #48bb78);
+    color: white;
+}
+
+.notif-error {
+    background: linear-gradient(135deg, #fc8181, #f56565);
+    color: white;
+}
+
+.notif-info {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: white;
+}
+
+.notif-warning {
+    background: linear-gradient(135deg, #f6ad55, #ed8936);
+    color: white;
+}
+
+/* =====================================================================
+   GESTIÓN DE MOTIVOS DE PAUSA
+   ===================================================================== */
+.motivo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.motivo-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.motivo-item.inactivo {
+    opacity: 0.5;
+    background: #f7fafc;
+}
+
+.motivo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.motivo-codigo {
+    font-family: monospace;
+    font-size: 11px;
+    color: #805ad5;
+    background: #f3e8ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.motivo-descripcion {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.motivo-acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e2e8f0;
+    color: #718096;
+    transition: all 0.2s;
+}
+
+.btn-toggle:hover {
+    background: #cbd5e0;
+}
+
+.btn-toggle.activo {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+}
+
+/* =====================================================================
+   INFO DE TIEMPO EN DETALLE
+   ===================================================================== */
+.tiempo-info-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+    padding: 15px;
+    background: linear-gradient(135deg, #f7fafc, #edf2f7);
+    border-radius: 12px;
+}
+
+.tiempo-stat {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tiempo-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.tiempo-stat-label {
+    font-size: 11px;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tiempo-stat.efectivo .tiempo-stat-value {
+    color: #38a169;
+}
+
+.tiempo-stat.pausado .tiempo-stat-value {
+    color: #805ad5;
+}
+
+/* =====================================================================
+   INDICADOR DE PAUSA ACTIVA
+   ===================================================================== */
+.pausa-activa-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #9f7aea, #805ad5);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    animation: pulse-pausa 2s infinite;
+}
+
+.pausa-activa-banner i {
+    font-size: 24px;
+}
+
+.pausa-activa-info {
+    flex: 1;
+}
+
+.pausa-activa-motivo {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.pausa-activa-tiempo {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* =====================================================================
+   CONTADOR DE PAUSAS EN CARD
+   ===================================================================== */
+.badge-pausas-count {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 20px;
+    height: 20px;
+    background: #805ad5;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(128, 90, 213, 0.4);
+}
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+@media (max-width: 768px) {
+    .tiempo-info-box {
+        grid-template-columns: 1fr;
+    }
+    
+    .timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
