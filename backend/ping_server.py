@@ -4894,21 +4894,20 @@ def main():
         except ImportError:
             ssl_context = None
         
-        # Abrir el navegador en segundo plano (solo si no es .exe, el launcher ya lo abre)
-        if not getattr(sys, 'frozen', False):
-            import threading
-            import webbrowser
-            import time
-            
-            def open_browser():
-                time.sleep(3)
-                try:
-                    protocol = "https" if ssl_context else "http"
-                    webbrowser.open(f"{protocol}://localhost:{port}/")
-                except Exception:
-                    pass
-                    
-            threading.Thread(target=open_browser, daemon=True).start()
+        # Abrir el navegador en segundo plano siempre
+        import threading
+        import webbrowser
+        import time
+        
+        def open_browser():
+            time.sleep(3)
+            try:
+                protocol = "https" if ssl_context else "http"
+                webbrowser.open(f"{protocol}://localhost:{port}/")
+            except Exception:
+                pass
+                
+        threading.Thread(target=open_browser, daemon=True).start()
 
         # Iniciar servidor Flask
         if ssl_context:

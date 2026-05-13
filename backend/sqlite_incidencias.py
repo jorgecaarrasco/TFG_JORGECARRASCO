@@ -233,6 +233,51 @@ class SQLiteIncidencias:
     def close(self):
         pass
 
+    def get_todas_mesas(self, activas_solo: bool = False) -> List[Dict]:
+        with self._lock:
+            conn = self._get_connection()
+            try:
+                cursor = conn.cursor()
+                query = "SELECT departamento, puesto, ip, nombre_puesto, activo FROM mesas"
+                if activas_solo:
+                    query += " WHERE activo = 1"
+                cursor.execute(query)
+                return cursor.fetchall()
+            finally:
+                conn.close()
+
+    def get_todos_rfid(self, activos_solo: bool = False) -> List[Dict]:
+        with self._lock:
+            conn = self._get_connection()
+            try:
+                cursor = conn.cursor()
+                query = "SELECT departamento, puesto, ip, nombre_dispositivo, activo FROM dispositivos_rfid"
+                if activos_solo:
+                    query += " WHERE activo = 1"
+                cursor.execute(query)
+                return cursor.fetchall()
+            finally:
+                conn.close()
+
+    def get_todas_zebras(self, activas_solo: bool = False) -> List[Dict]:
+        with self._lock:
+            conn = self._get_connection()
+            try:
+                cursor = conn.cursor()
+                query = "SELECT * FROM impresoras_zebra"
+                if activas_solo:
+                    query += " WHERE activo = 1"
+                cursor.execute(query)
+                return cursor.fetchall()
+            finally:
+                conn.close()
+
+    def get_zebras_configuracion(self, activas_solo: bool = False) -> List[Dict]:
+        return self.get_todas_zebras(activas_solo)
+
+    def exportar_incidencias_csv(self, fecha_inicio: str = None, fecha_fin: str = None, departamento: str = None) -> List[Dict]:
+        return self.get_incidencias(fecha_inicio, fecha_fin, departamento=departamento)
+
     def get_todos_usuarios(self, activos_solo=True) -> List[Dict]:
         with self._lock:
             conn = self._get_connection()
