@@ -272,11 +272,11 @@ class SQLiteIncidencias:
             finally:
                 conn.close()
 
-    def get_zebras_configuracion(self, activas_solo: bool = False) -> List[Dict]:
+    def get_zebras_configuracion(self, activas_solo: bool = False, departamento: str = None) -> List[Dict]:
         return self.get_todas_zebras(activas_solo)
 
     def exportar_incidencias_csv(self, fecha_inicio: str = None, fecha_fin: str = None, departamento: str = None) -> List[Dict]:
-        return self.get_incidencias(fecha_inicio, fecha_fin, departamento=departamento)
+        return self.get_incidencias(fecha_inicio=fecha_inicio, fecha_fin=fecha_fin, departamento=departamento)
 
     def get_todos_usuarios(self, activos_solo=True) -> List[Dict]:
         with self._lock:
@@ -408,24 +408,45 @@ class SQLiteIncidencias:
         return True
 
     def get_todas_incidencias(self) -> List[Dict]:
+        return self.get_incidencias()
+
+    def get_incidencias(self, fecha_inicio: str = None, fecha_fin: str = None,
+                        departamento: str = None, estado: str = None) -> List[Dict]:
         with self._lock:
             conn = self._get_connection()
             try:
                 cursor = conn.cursor()
-                query = """
+                where_clauses = []
+                params = []
+                if fecha_inicio:
+                    where_clauses.append("DATE(i.fecha_creacion) >= ?")
+                    params.append(fecha_inicio)
+                if fecha_fin:
+                    where_clauses.append("DATE(i.fecha_creacion) <= ?")
+                    params.append(fecha_fin)
+                if departamento and departamento != 'todos':
+                    where_clauses.append("i.departamento = ?")
+                    params.append(departamento)
+                if estado and estado != 'todos':
+                    where_clauses.append("i.estado = ?")
+                    params.append(estado)
+                where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
+                query = f"""
                     SELECT 
                         i.*,
                         (SELECT COUNT(*) FROM comentarios_incidencias c WHERE c.incidencia_id = i.id) as total_comentarios
                     FROM incidencias i
+                    {where_sql}
                     ORDER BY 
-                        CASE estado 
+                        CASE i.estado 
                             WHEN 'pendiente' THEN 1 
                             WHEN 'en_proceso' THEN 2 
-                            WHEN 'resuelta' THEN 3 
-                            ELSE 4 END,
-                        fecha_creacion DESC
+                            WHEN 'pausada' THEN 3
+                            WHEN 'resuelta' THEN 4 
+                            ELSE 5 END,
+                        i.fecha_creacion DESC
                 """
-                cursor.execute(query)
+                cursor.execute(query, params)
                 return cursor.fetchall()
             except Exception as e:
                 logging.error(f"❌ Error obteniendo incidencias: {e}")
